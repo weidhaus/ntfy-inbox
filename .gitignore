@@ -1,0 +1,17 @@
+.env
+.env.*
+!.env.example
+secrets/
+data/
+*.db
+*.db-wal
+*.db-shm
+*.sqlite*
+*.pem
+*.key
+__pycache__/
+*.pyc
+.venv/
+.DS_Store
+dist/
+build/

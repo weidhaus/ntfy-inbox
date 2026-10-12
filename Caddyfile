@@ -1,0 +1,12 @@
+{
+  admin off
+  auto_https off
+}
+:8080 {
+  basic_auth {
+    admin {$ADMIN_PASSWORD_HASH}
+  }
+  reverse_proxy inbox:8092 {
+    header_up Authorization "Bearer {$NTFY_UI_TOKEN}"
+  }
+}

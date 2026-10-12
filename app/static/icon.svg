@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+  <title>ntfy inbox</title>
+  <rect width="64" height="64" rx="15" fill="#2a634c"/>
+  <path d="M18 44h28l-4-6V28a10 10 0 0 0-20 0v10l-4 6Z" fill="none" stroke="#f5f6f2" stroke-width="4" stroke-linejoin="round"/>
+  <path d="M27 50a5 5 0 0 0 10 0M32 15v3" fill="none" stroke="#f5f6f2" stroke-width="4" stroke-linecap="round"/>
+</svg>

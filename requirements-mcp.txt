@@ -1,0 +1,2 @@
+# Optional; the inbox and its tests use Python's standard library only.
+mcp==1.30.0

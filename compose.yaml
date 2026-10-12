@@ -1,0 +1,48 @@
+name: ntfy-inbox
+services:
+  inbox:
+    build: ./app
+    image: ntfy-inbox:local
+    user: '1000:1000'
+    restart: unless-stopped
+    read_only: true
+    cap_drop: [ALL]
+    security_opt: [no-new-privileges:true]
+    tmpfs: ['/tmp:rw,nosuid,nodev,noexec,size=16m,mode=1777']
+    environment:
+      NTFY_API_TOKEN: ${NTFY_API_TOKEN:?Generate an API token}
+      NTFY_UI_TOKEN: ${NTFY_UI_TOKEN:?Generate a UI token}
+      NTFY_SOURCE_HOST: ${NTFY_SOURCE_HOST:?Set the source host}
+      NTFY_SOURCE_USER: ${NTFY_SOURCE_USER:?Set the source user}
+      NTFY_SOURCE_PORT: ${NTFY_SOURCE_PORT:-22}
+      NTFY_BASE_URL: ${NTFY_BASE_URL:-}
+      NTFY_UI_ORIGINS: ${NTFY_UI_ORIGINS:-http://localhost:8080}
+    ports: ['127.0.0.1:8092:8092']
+    volumes: ['./data:/data', './secrets/source:/run/source:ro']
+    mem_limit: 256m
+    cpus: 0.5
+    pids_limit: 64
+    healthcheck:
+      test: ['CMD', 'python', '-c', "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8092/health',timeout=3)"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+    logging:
+      driver: json-file
+      options: {max-size: 5m, max-file: '3'}
+  gateway:
+    build:
+      context: .
+      dockerfile: Dockerfile.caddy
+    restart: unless-stopped
+    user: '1000:1000'
+    read_only: true
+    cap_drop: [ALL]
+    security_opt: [no-new-privileges:true]
+    tmpfs: ['/tmp:rw,nosuid,nodev,noexec,size=16m,mode=1777']
+    environment:
+      ADMIN_PASSWORD_HASH: ${ADMIN_PASSWORD_HASH:?Set a Caddy password hash}
+      NTFY_UI_TOKEN: ${NTFY_UI_TOKEN:?Generate a UI token}
+    ports: ['127.0.0.1:8080:8080']
+    volumes: ['./Caddyfile:/etc/caddy/Caddyfile:ro']
+    depends_on: [inbox]
